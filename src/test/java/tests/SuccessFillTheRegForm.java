@@ -60,7 +60,6 @@ public class SuccessFillTheRegForm {
         .typeLocate(state, city);
 
     $("#uploadPicture").uploadFile(new File("src/test/resources/gravatar.png"));
-
     $("#submit").scrollIntoView(true).click();
 
     // check set values
