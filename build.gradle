@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+}
+
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+ext {
+    junitVersion = '5.7.1'
+}
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+            "com.codeborne:selenide:5.22.3",
+            "com.github.javafaker:javafaker:1.0.2",
+            'org.assertj:assertj-core:3.19.0',
+            'org.slf4j:slf4j-simple:1.7.30')
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+test {
+    useJUnitPlatform()
+}
