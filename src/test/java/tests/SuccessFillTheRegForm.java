@@ -5,19 +5,11 @@ import com.github.javafaker.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pages.RegPage;
-
-import java.io.File;
 import java.util.Locale;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
 import static utils.TextUtils.capitalize;
 
 public class SuccessFillTheRegForm {
-
-  private static final String FORM_TITLE = "Student Registration Form";
-  private static final String RESULTS_TITLE = "Thanks for submitting the form";
 
   RegPage registrationPage = new RegPage();
   Faker faker = new Faker(new Locale("de"));
@@ -26,13 +18,13 @@ public class SuccessFillTheRegForm {
   String lastName = faker.name().lastName();
   String email = faker.internet().emailAddress();
   String gender = capitalize(faker.dog().gender());
-  String phoneNum = faker.numerify("##########");
-  //   String phoneNum = faker.phoneNumber().phoneNumber(); don't work because bug on form
+  String phoneNum = faker.phoneNumber().subscriberNumber(10);
   String dayOfBirth = "09", monthOfBirth = "February", yearOfBirth = "1980";
-  String subjects1 = "Computer", subjects2 = "Eng";
+  String subjects1 = "Computer Science", subjects2 = "English";
   String hobbie1 = "Sports", hobbie2 = "Music";
-  String state = "NCR", city = "Delhi";
+  String avatar = "gravatar.png";
   String curAddress = faker.address().fullAddress();
+  String state = "NCR", city = "Delhi";
 
   @BeforeAll
   static void setup() {
@@ -43,7 +35,6 @@ public class SuccessFillTheRegForm {
   @Test
   void positiveFillTextFormTest() {
     registrationPage.openPage();
-    $(".practice-form-wrapper").shouldHave(text(FORM_TITLE));
 
     registrationPage
         .typeFirstName(firstName)
@@ -56,25 +47,24 @@ public class SuccessFillTheRegForm {
         .typeSubject(subjects2)
         .typeHobbies(hobbie1)
         .typeHobbies(hobbie2)
+        .uploadFile(avatar)
         .typeAddress(curAddress)
         .typeLocate(state, city);
 
-    $("#uploadPicture").uploadFile(new File("src/test/resources/gravatar.png"));
-    $("#submit").scrollIntoView(true).click();
+    registrationPage.submitForm();
 
     // check set values
-    registrationPage.checkResultsTitle(RESULTS_TITLE);
+    registrationPage.checkResultsTitle();
     registrationPage
         .checkResultsValue(firstName + " " + lastName)
         .checkResultsValue(email)
         .checkResultsValue(gender)
         .checkResultsValue(phoneNum)
         .checkResultsValue(dayOfBirth + " " + monthOfBirth + "," + yearOfBirth)
+        .checkResultsValue(subjects1 + ", " + subjects2)
         .checkResultsValue(hobbie1 + ", " + hobbie2)
+        .checkResultsValue(avatar)
         .checkResultsValue(curAddress)
         .checkResultsValue(state + " " + city);
-
-    $("tbody").$(byText("Subjects")).parent().shouldHave(text("Computer Science, English"));
-    $("tbody").$(byText("Picture")).parent().shouldHave(text("gravatar.png"));
   }
 }

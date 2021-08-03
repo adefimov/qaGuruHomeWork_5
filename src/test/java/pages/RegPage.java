@@ -3,6 +3,8 @@ package pages;
 import com.codeborne.selenide.SelenideElement;
 import utils.Calendar;
 
+import java.io.File;
+
 import static com.codeborne.selenide.Condition.text;
 import static java.lang.String.format;
 import static com.codeborne.selenide.Selectors.byText;
@@ -14,6 +16,7 @@ public class RegPage {
 
   public void openPage() {
     open("/automation-practice-form");
+    $(".practice-form-wrapper").shouldHave(text("Student Registration Form"));
   }
 
   public RegPage typeFirstName(String firstName) {
@@ -57,6 +60,11 @@ public class RegPage {
     return this;
   }
 
+  public RegPage uploadFile(String filename) {
+    $("#uploadPicture").uploadFile(new File("src/test/resources/" + filename));
+    return this;
+  }
+
   public RegPage typeAddress(String address) {
     $("#currentAddress").setValue(address).pressEnter();
     return this;
@@ -70,8 +78,12 @@ public class RegPage {
     return this;
   }
 
-  public void checkResultsTitle(String title) {
-    modal.$(".modal-title").shouldHave(text(title));
+  public void submitForm() {
+    $("#submit").click();
+  }
+
+  public void checkResultsTitle() {
+    modal.$(".modal-title").shouldHave(text("Thanks for submitting the form"));
   }
 
   public RegPage checkResultsValue(String value) {
